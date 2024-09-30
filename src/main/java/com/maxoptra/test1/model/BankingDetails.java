@@ -2,8 +2,9 @@ package com.maxoptra.test1.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
+
 
 public class BankingDetails {
 
@@ -19,7 +20,13 @@ public class BankingDetails {
     public BankingDetails(String bank, String cardNumber, LocalDate expiryDate) {
         this.bank = bank;
         this.cardNumber = cardNumber;
-        this.expiryDate = expiryDate;
+
+        // Create SimpleDateFormat with the desired format "MMM-yyyy"
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM-yyyy");
+
+        // Format the date
+        String formattedDate = formatter.format(expiryDate);
+        this.expiryDate = expiryDate ;
     }
 
     public String getBank() {

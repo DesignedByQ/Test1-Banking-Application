@@ -41,11 +41,14 @@ public class DataReceiver {
         // Add the new BankingDetails object to the list
         bankDetailsList.add(userInput);
 
+        // Sort the list before saving and displaying it
+        List<BankingDetails> sortedBankingDetails = bankingService.sortingEntries(bankDetailsList);
+
         // Store the updated list in the session. session is called "BankingDetailsList"
-        session.setAttribute("BankingDetailsList", bankDetailsList);
+        session.setAttribute("BankingDetailsList", sortedBankingDetails);
 
         // Add the list to the model so it can be displayed, model is called "BankingDetailsList"
-        model.addAttribute("BankingDetailsList", bankDetailsList);
+        model.addAttribute("BankingDetailsList", sortedBankingDetails);
 
         return "display";
     }
