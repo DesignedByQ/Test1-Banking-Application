@@ -3,6 +3,8 @@ package com.maxoptra.test1.service;
 import com.maxoptra.test1.model.BankingDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BankingService {
 
@@ -29,7 +31,7 @@ public class BankingService {
         return "";
     }
 
-    public BankingDetails sortingEntries(BankingDetails bd){
+    public List<BankingDetails> sortingEntries(List<BankingDetails> bd){
 
         return bd;
     }

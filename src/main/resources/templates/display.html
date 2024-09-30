@@ -6,10 +6,19 @@
     <title>Result</title>
 </head>
 <body>
-    <h1>Bank List</h1>
-    <p><strong>Bank:</strong> <span th:text="${BankingDetailsStorage.bank}"></span></p>
-    <p><strong>Card Number:</strong> <span th:text="${BankingDetailsStorage.cardNumber}"></span></p>
-    <p><strong>Expiry Date:</strong> <span th:text="${BankingDetailsStorage.expiryDate}"></span></p>
-    <a href="/">Add New Bank Details</a>
+<h1>Bank List</h1>
+
+<div th:if="${BankingDetailsList != null}">
+    <ul>
+        <li th:each="bankingDetail : ${BankingDetailsList}">
+            <p><strong>Bank:</strong> <span th:text="${bankingDetail.bank}"></span></p>
+            <p><strong>Card Number:</strong> <span th:text="${bankingDetail.cardNumber}"></span></p>
+            <p><strong>Expiry Date:</strong> <span th:text="${bankingDetail.expiryDate}"></span></p>
+            <br/>
+        </li>
+    </ul>
+</div>
+
+<a href="/">Add New Bank Details</a>
 </body>
 </html>
