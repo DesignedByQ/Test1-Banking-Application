@@ -8,6 +8,10 @@ public class BankingDetails {
     private String cardNumber;
     private Date expiryDate;
 
+    public BankingDetails(){
+
+    }
+
     public BankingDetails(String bank, String cardNumber, Date expiryDate) {
         this.bank = bank;
         this.cardNumber = cardNumber;
