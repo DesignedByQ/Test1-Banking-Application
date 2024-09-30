@@ -49,7 +49,7 @@ public class DataReceiver {
 
         //display the data from the session
         model.addAttribute("BankingDetailsStorage", sortedBankingDetails);
-        return "result";
+        return "displaydata";
     }
 
 
