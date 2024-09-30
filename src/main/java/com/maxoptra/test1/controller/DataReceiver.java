@@ -4,13 +4,12 @@ import com.maxoptra.test1.model.BankingDetails;
 import com.maxoptra.test1.service.BankingService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @Controller
@@ -35,10 +34,10 @@ public class DataReceiver {
         session.setAttribute("BankingDetailsStorage", userInput);
         //i want to store the entry in the list called BankingDetailsStorage
         model.addAttribute("BankingDetailsStorage", userInput);
-        return "displaydata";
+        return "display";
     }
 
-    @GetMapping("/displaydata")
+    @GetMapping("/display")
     public String display(HttpSession session, Model model) {
 
         //get the session
@@ -49,7 +48,7 @@ public class DataReceiver {
 
         //display the data from the session
         model.addAttribute("BankingDetailsStorage", sortedBankingDetails);
-        return "displaydata";
+        return "display";
     }
 
 

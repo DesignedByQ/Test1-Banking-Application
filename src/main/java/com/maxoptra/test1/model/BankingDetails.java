@@ -1,18 +1,22 @@
 package com.maxoptra.test1.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 public class BankingDetails {
 
     private String bank;
     private String cardNumber;
-    private Date expiryDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate expiryDate;
 
     public BankingDetails(){
 
     }
 
-    public BankingDetails(String bank, String cardNumber, Date expiryDate) {
+    public BankingDetails(String bank, String cardNumber, LocalDate expiryDate) {
         this.bank = bank;
         this.cardNumber = cardNumber;
         this.expiryDate = expiryDate;
@@ -34,11 +38,11 @@ public class BankingDetails {
         this.cardNumber = cardNumber;
     }
 
-    public Date getExpiryDate() {
+    public LocalDate getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
     }
 }
