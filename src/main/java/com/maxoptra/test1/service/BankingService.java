@@ -9,27 +9,20 @@ import java.util.stream.Collectors;
 @Service
 public class BankingService {
 
-    public String validateCardNumber(BankingDetails details){
+    public Boolean validateCardNumber(BankingDetails details){
 
+        String regex;
         if(!details.getBank().equalsIgnoreCase("american express")){
 
-            String regex = "^\\d{4}-\\d{4}-\\d{4}-\\d{4}$";
-
-            if(!details.getCardNumber().matches(regex)){
-                return "Please enter a valid card number, example 1111-1111-1111-1111";
-            }
+            regex = "^\\d{4}-\\d{4}-\\d{4}-\\d{4}$";
 
         } else {
 
-            String regex = "^\\d{4}-\\d{4}-\\d{4}-\\d{3}$";
-
-            if(!details.getCardNumber().matches(regex)){
-                return "Please enter a valid card number, example 1111-1111-1111-1111";
-            }
+            regex = "^\\d{4}-\\d{4}-\\d{4}-\\d{3}$";
 
         }
+        return details.getCardNumber().matches(regex);
 
-        return "";
     }
 
     // Sort the list by expiryDate in descending order

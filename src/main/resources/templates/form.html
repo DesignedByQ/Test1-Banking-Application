@@ -8,6 +8,11 @@
 <body>
     <h1>Enter Your Bank Details</h1>
 
+    <!-- Display error message if validation fails -->
+    <div th:if="${errorMessage}" style="color: red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
     <form action="#" th:action="@{/submitdata}" th:object="${BankingDetailsStorage}" method="post">
 
         <label for="bank">Name:</label>

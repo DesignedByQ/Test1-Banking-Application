@@ -30,6 +30,18 @@ public class DataReceiver {
     @PostMapping("/submitdata")
     public String submit(@ModelAttribute BankingDetails userInput, HttpSession session, Model model) {
 
+        // Validate the card number
+        if (!bankingService.validateCardNumber(userInput)) {
+            // Add an error message to the model if validation fails
+            model.addAttribute("errorMessage", "Please enter a valid card number, example: 1111-1111-1111-1111 or 2222-2222-2222-222 for Amex cards");
+
+            // Add the user input back to the form so the user doesn't have to re-enter everything
+            model.addAttribute("BankingDetailsStorage", userInput);
+
+            // Return the form view to allow the user to correct their input
+            return "form";
+        }
+
         // Retrieve the existing list from the session, if it exists
         List<BankingDetails> bankDetailsList = (List<BankingDetails>) session.getAttribute("BankingDetailsList");
 
