@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -41,6 +43,18 @@ public class DataReceiver {
             // Return the form view to allow the user to correct their input
             return "form";
         }
+
+        // Format expiryDate
+        Date expiryDate = userInput.getExpiryDate();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM-yyyy");
+
+        String formattedExpiryDate = null;
+        if (expiryDate != null) {
+            formattedExpiryDate = sdf.format(expiryDate);
+        }
+
+        // Add to model or session
+        model.addAttribute("formattedExpiryDate", formattedExpiryDate);
 
         // Retrieve the existing list from the session, if it exists
         List<BankingDetails> bankDetailsList = (List<BankingDetails>) session.getAttribute("BankingDetailsList");

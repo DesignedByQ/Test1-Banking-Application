@@ -4,6 +4,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 
 
 public class BankingDetails {
@@ -11,21 +12,15 @@ public class BankingDetails {
     private String bank;
     private String cardNumber;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate expiryDate;
+    private Date expiryDate;
 
     public BankingDetails(){
 
     }
 
-    public BankingDetails(String bank, String cardNumber, LocalDate expiryDate) {
+    public BankingDetails(String bank, String cardNumber, Date expiryDate) {
         this.bank = bank;
         this.cardNumber = cardNumber;
-
-        // Create SimpleDateFormat with the desired format "MMM-yyyy"
-        SimpleDateFormat formatter = new SimpleDateFormat("MMM-yyyy");
-
-        // Format the date
-        String formattedDate = formatter.format(expiryDate);
         this.expiryDate = expiryDate ;
     }
 
@@ -45,11 +40,11 @@ public class BankingDetails {
         this.cardNumber = cardNumber;
     }
 
-    public LocalDate getExpiryDate() {
+    public Date getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(LocalDate expiryDate) {
+    public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
 }
