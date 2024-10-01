@@ -2,8 +2,6 @@ package com.maxoptra.test1.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 
 

@@ -32,6 +32,4 @@ public class BankingService {
                 .collect(Collectors.toList());
     }
 
-
-
 }
