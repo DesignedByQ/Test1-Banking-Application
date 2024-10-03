@@ -32,5 +32,15 @@
         <button type="submit">Submit</button>
 
     </form>
+
+    <h2>Alternatively, upload a CSV file</h2>
+
+    <!-- File upload form for CSV -->
+    <form action="#" th:action="@{/uploadcsv}" method="post" enctype="multipart/form-data">
+        <label for="csvFile">Upload CSV File:</label>
+        <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
+        <br><br>
+        <button type="submit">Upload CSV</button>
+    </form>
 </body>
 </html>

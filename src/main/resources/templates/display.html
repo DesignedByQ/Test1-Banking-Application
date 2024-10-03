@@ -13,7 +13,7 @@
         <li th:each="bankingDetail : ${BankingDetailsList}">
             <p><strong>Bank:</strong> <span th:text="${bankingDetail.bank}"></span></p>
             <p><strong>Card Number:</strong> <span th:text="'xxxx-xxxx-xxxx-' + ${#strings.substring(bankingDetail.cardNumber,15,bankingDetail.cardNumber.length())}"></span></p>
-            <p><strong>Expiry Date:</strong> <span th:text="${formattedExpiryDate}"></span></p>
+            <p><strong>Expiry Date:</strong> <span th:text="${#dates.format(bankingDetail.expiryDate, 'MMM-yyyy')}"></span></p>
             <br/>
         </li>
     </ul>

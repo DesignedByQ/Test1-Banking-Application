@@ -9,7 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,17 +48,17 @@ public class DataReceiver {
             return "form";
         }
 
-        // Format expiryDate
-        Date expiryDate = userInput.getExpiryDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM-yyyy");
-
-        String formattedExpiryDate = null;
-        if (expiryDate != null) {
-            formattedExpiryDate = sdf.format(expiryDate);
-        }
-
-        // Add to model or session
-        model.addAttribute("formattedExpiryDate", formattedExpiryDate);
+//        // Format expiryDate
+//        Date expiryDate = userInput.getExpiryDate();
+//        SimpleDateFormat sdf = new SimpleDateFormat("MMM-yyyy");
+//
+//        String formattedExpiryDate = null;
+//        if (expiryDate != null) {
+//            formattedExpiryDate = sdf.format(expiryDate);
+//        }
+//
+//        // Add to model or session
+//        model.addAttribute("formattedExpiryDate", formattedExpiryDate);
 
         // Retrieve the existing list from the session, if it exists
         List<BankingDetails> bankDetailsList = (List<BankingDetails>) session.getAttribute("BankingDetailsList");
@@ -98,6 +102,52 @@ public class DataReceiver {
 
         return "display";
     }
+
+    @PostMapping("/uploadcsv")
+    public String uploadCSV(@RequestParam("csvFile") MultipartFile csvFile, HttpSession session, Model model) {
+        try {
+            List<BankingDetails> bankDetailsList = (List<BankingDetails>) session.getAttribute("BankingDetailsList");
+
+            if (bankDetailsList == null) {
+                bankDetailsList = new ArrayList<>();
+            }
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(csvFile.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                BankingDetails bankingDetails = new BankingDetails();
+                bankingDetails.setBank(data[0].trim());
+                bankingDetails.setCardNumber(data[1].trim());
+                bankingDetails.setExpiryDate(bankingService.parseDate(data[2].trim()));
+
+                // Validate each card number before adding it to the list
+                if (!bankingService.validateCardNumber(bankingDetails)) {
+                    model.addAttribute("errorMessage", "Invalid card number in the CSV file: " + bankingDetails.getCardNumber());
+                    return "form";  // Return to form with an error message if validation fails
+                }
+
+                // If valid, add the entry
+                bankDetailsList.add(bankingDetails);
+            }
+
+            // Sort the list
+            List<BankingDetails> sortedBankingDetails = bankingService.sortingEntries(bankDetailsList);
+
+            // Store updated list in session
+            session.setAttribute("BankingDetailsList", sortedBankingDetails);
+            model.addAttribute("BankingDetailsList", sortedBankingDetails);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Error processing CSV file: " + e.getMessage());
+            return "form";
+        }
+
+        return "display";
+    }
+
 
 
 }
