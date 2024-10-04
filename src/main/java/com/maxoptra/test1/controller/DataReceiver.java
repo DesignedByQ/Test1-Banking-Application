@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -25,14 +23,14 @@ public class DataReceiver {
     @Autowired
     BankingService bankingService;
 
-    // GET request to show the form and create a new empty BankingDetails object
+    //Show the form and create a new empty BankingDetails object
     @GetMapping("/")
     public String dataContainer(Model model) {
         model.addAttribute("BankingDetailsStorage", new BankingDetails());
         return "form";
     }
 
-    // POST request to submit form data and store it in the session
+    //Submit form data and store it in the session
     @PostMapping("/submitdata")
     public String submit(@ModelAttribute BankingDetails userInput, HttpSession session, Model model) {
 
@@ -47,18 +45,6 @@ public class DataReceiver {
             // Return the form view to allow the user to correct their input
             return "form";
         }
-
-//        // Format expiryDate
-//        Date expiryDate = userInput.getExpiryDate();
-//        SimpleDateFormat sdf = new SimpleDateFormat("MMM-yyyy");
-//
-//        String formattedExpiryDate = null;
-//        if (expiryDate != null) {
-//            formattedExpiryDate = sdf.format(expiryDate);
-//        }
-//
-//        // Add to model or session
-//        model.addAttribute("formattedExpiryDate", formattedExpiryDate);
 
         // Retrieve the existing list from the session, if it exists
         List<BankingDetails> bankDetailsList = (List<BankingDetails>) session.getAttribute("BankingDetailsList");
@@ -106,36 +92,52 @@ public class DataReceiver {
     @PostMapping("/uploadcsv")
     public String uploadCSV(@RequestParam("csvFile") MultipartFile csvFile, HttpSession session, Model model) {
         try {
-            List<BankingDetails> bankDetailsList = (List<BankingDetails>) session.getAttribute("BankingDetailsList");
+            if (csvFile.isEmpty()) {
+                model.addAttribute("errorMessage", "CSV file is empty. Please upload a valid file.");
+                return "form";
+            }
 
+            List<BankingDetails> bankDetailsList = (List<BankingDetails>) session.getAttribute("BankingDetailsList");
             if (bankDetailsList == null) {
                 bankDetailsList = new ArrayList<>();
             }
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(csvFile.getInputStream()));
+
             String line;
+
+            List<String> errors = new ArrayList<>();
+
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
 
                 BankingDetails bankingDetails = new BankingDetails();
                 bankingDetails.setBank(data[0].trim());
                 bankingDetails.setCardNumber(data[1].trim());
-                bankingDetails.setExpiryDate(bankingService.parseDate(data[2].trim()));
 
-                // Validate each card number before adding it to the list
-                if (!bankingService.validateCardNumber(bankingDetails)) {
-                    model.addAttribute("errorMessage", "Invalid card number in the CSV file: " + bankingDetails.getCardNumber());
-                    return "form";  // Return to form with an error message if validation fails
+                try {
+                    bankingDetails.setExpiryDate(bankingService.parseDate(data[2].trim()));
+                } catch (ParseException e) {
+                    errors.add("Invalid date format in CSV: " + data[2].trim());
+                    continue; // Skip to next row
                 }
 
-                // If valid, add the entry
+                if (!bankingService.validateCardNumber(bankingDetails)) {
+                    errors.add("Invalid card number in CSV: " + bankingDetails.getCardNumber());
+                    continue; // Skip to next row
+                }
+
                 bankDetailsList.add(bankingDetails);
             }
 
-            // Sort the list
-            List<BankingDetails> sortedBankingDetails = bankingService.sortingEntries(bankDetailsList);
+            if (!errors.isEmpty()) {
+                model.addAttribute("BankingDetailsStorage", new BankingDetails()); // Add this line
+                model.addAttribute("errorMessage", String.join(", ", errors));
+                return "form";
+            }
 
-            // Store updated list in session
+            // Sort the list by expiry date
+            List<BankingDetails> sortedBankingDetails = bankingService.sortingEntries(bankDetailsList);
             session.setAttribute("BankingDetailsList", sortedBankingDetails);
             model.addAttribute("BankingDetailsList", sortedBankingDetails);
 
@@ -147,7 +149,5 @@ public class DataReceiver {
 
         return "display";
     }
-
-
 
 }

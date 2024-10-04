@@ -13,19 +13,13 @@ import java.util.stream.Collectors;
 public class BankingService {
 
     public Boolean validateCardNumber(BankingDetails details){
-
         String regex;
         if(!details.getBank().equalsIgnoreCase("american express")){
-
             regex = "^\\d{4}-\\d{4}-\\d{4}-\\d{4}$";
-
         } else {
-
             regex = "^\\d{4}-\\d{4}-\\d{4}-\\d{3}$";
-
         }
         return details.getCardNumber().matches(regex);
-
     }
 
     // Sort the list by expiryDate in descending order

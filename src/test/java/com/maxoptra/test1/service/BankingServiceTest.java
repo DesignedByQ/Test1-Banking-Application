@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -97,5 +99,19 @@ class BankingServiceTest {
         assertEquals("2024-10-01", sdf.format(sortedList.get(0).getExpiryDate()));
         assertEquals("2023-08-01", sdf.format(sortedList.get(1).getExpiryDate()));
         assertEquals("2022-05-01", sdf.format(sortedList.get(2).getExpiryDate()));
+    }
+
+    @Test
+    public void parseDateTest() throws ParseException {
+
+        String testDate = ("2000-01-01");
+        Date test1 = bankingService.parseDate(testDate);
+
+        String fakeDate = ("3000-10-k");
+
+        assertTrue(test1 instanceof Date);
+        assertThrows(ParseException.class, () -> {
+            bankingService.parseDate(fakeDate);
+        });
     }
 }
