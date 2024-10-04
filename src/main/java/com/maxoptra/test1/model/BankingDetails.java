@@ -4,7 +4,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-
 public class BankingDetails {
 
     private String bank;
