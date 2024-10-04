@@ -2,7 +2,6 @@ package com.maxoptra.test1.service;
 
 import com.maxoptra.test1.model.BankingDetails;
 import org.springframework.stereotype.Service;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,6 +11,7 @@ import java.util.stream.Collectors;
 @Service
 public class BankingService {
 
+    //Check if the cardno is valid base on bank name
     public Boolean validateCardNumber(BankingDetails details){
         String regex;
         if(!details.getBank().equalsIgnoreCase("american express")){
@@ -22,14 +22,14 @@ public class BankingService {
         return details.getCardNumber().matches(regex);
     }
 
-    // Sort the list by expiryDate in descending order
+    //Sort the list by expiryDate in descending order
     public List<BankingDetails> sortingEntries(List<BankingDetails> bankingDetailsList) {
         return bankingDetailsList.stream()
-                .sorted((bd1, bd2) -> bd2.getExpiryDate().compareTo(bd1.getExpiryDate())) // Sort by expiryDate in descending order
+                .sorted((bd1, bd2) -> bd2.getExpiryDate().compareTo(bd1.getExpiryDate()))
                 .collect(Collectors.toList());
     }
 
-    // Method to parse a date string (e.g., "2017-03-01") into a Date object
+    //Parse a date string (e.g., "2017-03-01") into a Date object
     public Date parseDate(String dateString) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.parse(dateString);

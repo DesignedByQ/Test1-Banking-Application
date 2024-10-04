@@ -13,6 +13,8 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
+    <h2>Enter bank details individually here</h2>
+
     <form action="#" th:action="@{/submitdata}" th:object="${BankingDetailsStorage}" method="post">
 
         <label for="bank">Name:</label>

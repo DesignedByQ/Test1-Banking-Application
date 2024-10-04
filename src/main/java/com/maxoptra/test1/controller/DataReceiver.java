@@ -34,36 +34,36 @@ public class DataReceiver {
     @PostMapping("/submitdata")
     public String submit(@ModelAttribute BankingDetails userInput, HttpSession session, Model model) {
 
-        // Validate the card number
+        //Validate the card number
         if (!bankingService.validateCardNumber(userInput)) {
-            // Add an error message to the model if validation fails
+            //Add an error message to the model if validation fails
             model.addAttribute("errorMessage", "Please enter a valid card number, example: 1111-1111-1111-1111 or 2222-2222-2222-222 for Amex cards");
 
-            // Add the user input back to the form so the user doesn't have to re-enter everything
+            //Add the user input back to the form so the user doesn't have to re-enter everything
             model.addAttribute("BankingDetailsStorage", userInput);
 
-            // Return the form view to allow the user to correct their input
+            //Return the form view to allow the user to correct their input
             return "form";
         }
 
-        // Retrieve the existing list from the session, if it exists
+        //Retrieve the existing list from the session, if it exists
         List<BankingDetails> bankDetailsList = (List<BankingDetails>) session.getAttribute("BankingDetailsList");
 
-        // If no list exists in the session, create a new one
+        //If no list exists in the session, create a new one
         if (bankDetailsList == null) {
             bankDetailsList = new ArrayList<>();
         }
 
-        // Add the new BankingDetails object to the list
+        //Add the new BankingDetails object to the list
         bankDetailsList.add(userInput);
 
-        // Sort the list before saving and displaying it
+        //Sort the list by date before saving and displaying it
         List<BankingDetails> sortedBankingDetails = bankingService.sortingEntries(bankDetailsList);
 
-        // Store the updated list in the session. session is called "BankingDetailsList"
+        //Store the updated list in the session
         session.setAttribute("BankingDetailsList", sortedBankingDetails);
 
-        // Add the list to the model so it can be displayed, model is called "BankingDetailsList"
+        //Display the sorted list using the model
         model.addAttribute("BankingDetailsList", sortedBankingDetails);
 
         return "display";
@@ -72,18 +72,18 @@ public class DataReceiver {
     @GetMapping("/display")
     public String display(HttpSession session, Model model) {
 
-        // Retrieve the list of bank details from the session
+        //Retrieve the list of bank details from the session
         List<BankingDetails> bankDetailsList = (List<BankingDetails>) session.getAttribute("BankingDetailsList");
 
-        // If the list is null, initialize it (this could happen if no data has been submitted yet)
+        //If no data has been submitted yet then initialize the list
         if (bankDetailsList == null) {
             bankDetailsList = new ArrayList<>();
         }
 
-        // Sort the list (if needed)
+        //Sort the list by date
         List<BankingDetails> sortedBankingDetails = bankingService.sortingEntries(bankDetailsList);
 
-        // Add the sorted list to the model for display
+        //Add the sorted list to the model for display
         model.addAttribute("BankingDetailsList", sortedBankingDetails);
 
         return "display";
@@ -92,6 +92,7 @@ public class DataReceiver {
     @PostMapping("/uploadcsv")
     public String uploadCSV(@RequestParam("csvFile") MultipartFile csvFile, HttpSession session, Model model) {
         try {
+            //Check if the csv file contains data
             if (csvFile.isEmpty()) {
                 model.addAttribute("errorMessage", "CSV file is empty. Please upload a valid file.");
                 return "form";
@@ -102,10 +103,12 @@ public class DataReceiver {
                 bankDetailsList = new ArrayList<>();
             }
 
+            //Read each row of the csv
             BufferedReader reader = new BufferedReader(new InputStreamReader(csvFile.getInputStream()));
 
             String line;
 
+            //Collect any errors found in this list
             List<String> errors = new ArrayList<>();
 
             while ((line = reader.readLine()) != null) {
@@ -119,24 +122,25 @@ public class DataReceiver {
                     bankingDetails.setExpiryDate(bankingService.parseDate(data[2].trim()));
                 } catch (ParseException e) {
                     errors.add("Invalid date format in CSV: " + data[2].trim());
-                    continue; // Skip to next row
+                    continue;
                 }
 
                 if (!bankingService.validateCardNumber(bankingDetails)) {
                     errors.add("Invalid card number in CSV: " + bankingDetails.getCardNumber());
-                    continue; // Skip to next row
+                    continue;
                 }
 
                 bankDetailsList.add(bankingDetails);
             }
 
+            //If errors were found, display them on the form page
             if (!errors.isEmpty()) {
                 model.addAttribute("BankingDetailsStorage", new BankingDetails()); // Add this line
                 model.addAttribute("errorMessage", String.join(", ", errors));
                 return "form";
             }
 
-            // Sort the list by expiry date
+            //If no errors were found, sort the list by expiry date
             List<BankingDetails> sortedBankingDetails = bankingService.sortingEntries(bankDetailsList);
             session.setAttribute("BankingDetailsList", sortedBankingDetails);
             model.addAttribute("BankingDetailsList", sortedBankingDetails);
