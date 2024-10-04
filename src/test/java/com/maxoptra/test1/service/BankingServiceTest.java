@@ -76,13 +76,13 @@ class BankingServiceTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         BankingDetails bd1 = new BankingDetails();
-        bd1.setExpiryDate(sdf.parse("2024-10-01"));  // Future date
+        bd1.setExpiryDate(sdf.parse("2024-10-01"));  //Future date
 
         BankingDetails bd2 = new BankingDetails();
-        bd2.setExpiryDate(sdf.parse("2022-05-01"));  // Older date
+        bd2.setExpiryDate(sdf.parse("2022-05-01"));  //Older date
 
         BankingDetails bd3 = new BankingDetails();
-        bd3.setExpiryDate(sdf.parse("2023-08-01"));  // Mid-range date
+        bd3.setExpiryDate(sdf.parse("2023-08-01"));  //Mid-range date
 
         //Add the objects to a list
         List<BankingDetails> bankDetailsList = new ArrayList<>();
